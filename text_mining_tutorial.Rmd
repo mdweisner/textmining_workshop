@@ -22,7 +22,7 @@ New packages for this week include
 
 ## Package Installation (Optional)
 ```{r package installation, eval=FALSE}
-install.packages(c("tidyverse", "dplyr", "ggraph", "tidytext", "gutenbergr", "janeaustenr", "tm", "wordcloud", "topicmodels", "text2vec", "ggplot2"))
+install.packages(c("tidyverse", "dplyr", "ggraph", "tidytext", "gutenbergr", "janeaustenr", "tm", "wordcloud", "topicmodels", "text2vec", "ggplot2", "quanteda"))
 ```
 
 ## Basic Packages to Load
@@ -35,11 +35,15 @@ library(ggplot2)
 
 # Tidy Text
 
-In general, a "tidy" `data.frame`, which is what we will use for R text analysis, has...
+In general, a "tidy" `data.frame`, which is what we will use for R text analysis, has
 
 * One "observation" per row
 * Each column is a variable
 * Each type of observational unit can be represented as a table
+
+Which can be seen in the images below:
+
+![Source: https://r4ds.had.co.nz/tidy-data.html](tidy-1.png)
 
 When applied to text data, "tidy" means a table with one "token" per row, where a "token" can be a single word or set of adjacent words. The main strength of this approach is that it integrates well with the rest of the packages in the **tidyverse**.
 
@@ -99,11 +103,9 @@ tidy_hgwells %>%
 
 # Sentiment Analysis in Text
 
-Ascribing sentiment from text without having a human read it is difficult.
-
 Text may have a sentiment that is easy for a human to pick up on but the sentiment of individual words is subject to negation, context, sarcasm, and other linguistic problems. 
 
-Nevertheless, people try to analyze the sentiment of text. The **tidytext** package includes a `data.frame` call `sentiments`
+Still, there are efforts to allow for analysis of the sentiment of text. The **tidytext** package includes a `data.frame` call `sentiments`
 
 ```{r}
 sentiments
@@ -112,37 +114,65 @@ table(sentiments$score)
 
 These are scored by three different sets of researchers. We can then `left_join` a tidy `data.frame` of texts with the `sentiments` `data.frame` to investigate whether the words used tend to be negative or positive, for example using the books writen by Jane Austen:
 
+
+### Jane Austen Books
 ```{r}
 library(janeaustenr)
 library(stringr)
+```
 
+```{r}
 tidy_books <- austen_books() %>%
   group_by(book) %>%
   mutate(linenumber = row_number(),
-         chapter = cumsum(str_detect(text, regex("^chapter [\\divxlc]", 
-                                                 ignore_case = TRUE)))) %>%
+         chapter = cumsum(str_detect(text, regex("^chapter [\\divxlc]", ignore_case = TRUE)))) %>%
   ungroup() %>%
   unnest_tokens(word, text)
 
+tidy_books
+```
+
+### Sentiment
+
+There are several sentiment analysis datasets, for example here are sentiment assignments from the [National Resource Council of Canada's Emotional Lexicon](https://www.nrc-cnrc.gc.ca/eng/solutions/advisory/emotion_lexicons.html)
+
+Let's find words that are associated with being joyful
+```{r}
 nrc_joy <- get_sentiments("nrc") %>% 
   filter(sentiment == "joy") # extract joyful words as determined by the nrc group
 
+head(nrc_joy)
+```
+
+Let's look at the sentiment of words in the book "Emma"
+```{r}
 tidy_books %>%
   filter(book == "Emma") %>%
   inner_join(nrc_joy) %>%
   count(word, sort = TRUE)
+```
 
+Now let's do an inner join (so just of the words that are in both datsaets) of Emma with the Bing sentiment analysis
+```{r}
 jane_austen_sentiment <- tidy_books %>%
   inner_join(get_sentiments("bing")) %>%
   count(book, index = linenumber %/% 80, sentiment) %>%
   spread(sentiment, n, fill = 0) %>%
   mutate(sentiment = positive - negative)
 
+head(jane_austen_sentiment)
+```
+
+Notice it has both negative and positive scores and a net sentiment (representing positive and negative language, for whatever that's worth).
+
+And now let's plot it
+```{r}
 ggplot(jane_austen_sentiment, aes(index, sentiment, fill = book)) +
   geom_col(show.legend = FALSE) +
   facet_wrap(~book, ncol = 2, scales = "free_x")
 ```
 
+Lastly, let's do a sentiment analysis of the most frequent words' contribution to positive and negative sentiment.
 ```{r}
 tidy_books %>%
   inner_join(get_sentiments("bing")) %>%
@@ -160,7 +190,9 @@ tidy_books %>%
   coord_flip()  
 ```
 
-Although fairly useless, you can also make wordclouds
+
+### Word Clouds
+R Also has good libraries for wod clouds (which are less useful for statistics, but fun)
 ```{r}
 library(wordcloud)
 
@@ -169,18 +201,66 @@ tidy_books %>%
   count(word) %>%
   with(wordcloud(word, n, max.words = 100))
 ```
-perhaps it would be better to organize them by sentiment, as shown in the reading.
 
-# Federalist Papers
-
-he text of the Federalist Papers need to be in a subdirectory called federalist below your working directory.
-The Federalist Papers can be downloaded and unzipped via
+We could color the words by sentiment.
+A good list of colors is available [here](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf)
 ```{r}
-download.file("https://courseworks.columbia.edu/x/L294Da", destfile = "federalist.zip")
+sentiment_books <- tidy_books %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE) %>%
+  mutate(word = reorder(word, n))
+
+n <- nrow(sentiment_books)
+colors <- rep("grey", n)
+colors[sentiment_books$sentiment == "negative"] <- "coral2"
+colors[sentiment_books$sentiment == "positive"] <-  "cyan3"
+
+sentiment_books %>%
+with(wordcloud(word, n, colors = colors, max.words = 100))
+```
+
+# Processing Text in R
+
+## Federalist Papers Data
+Download the Federalist Papers data from here:
+
+[https://github.com/mdweisner/textmining_workshop/raw/master/federalist.zip](https://github.com/mdweisner/textmining_workshop/raw/master/federalist.zip)
+
+The text of the Federalist Papers need to be in a subdirectory called federalist below your working directory.
+
+```{r}
+download.file("https://github.com/mdweisner/textmining_workshop/raw/master/federalist.zip", destfile = "./federalist.zip")
 unzip("federalist.zip")
 dir("federalist")
 ```
+
+You should now have a folder called federalist in your working directory.
+
+## Basics of Text Processing
+
+The basic workflow from text includes:
+
+1. Convert your text data, format it into a corpus, which is a special collection of text documents
+2. Clean the corpus (remove whitespace, convert to lowercase, remove stop words, reduce to wordstems)
+3. Create a Document-Term Matrix (DTM) from the corpus
+4. Conduct Analysis
+
+## quanteda, tm, tidytext
+
+There are three packages that can be used to prepare text data in this way.
+
+```{r}
+library(quanteda)
+library(tm)
+library(tidytext)
+```
+
+
+
+## Corpus & Corpora
+
 First, we indicate which documents are to be included in the corpus
+
 ```{r, message = FALSE}
 library(tm)
 corpus_raw <- Corpus(DirSource(directory = "federalist", pattern = "fp"))
