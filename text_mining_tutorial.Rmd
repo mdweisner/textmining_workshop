@@ -5,9 +5,11 @@ date: "Feburary 4, 2019"
 output: html_document
 ---
 
+This tutorial was based on the Fall 2018 Data Mining course at Columbia University lead by Ben Goodrich.
+
 # Packages
 
-New packages for this week include
+Packages for this tutorial include
 
 * tidyverse
 * tidytext
@@ -100,6 +102,7 @@ tidy_hgwells
 tidy_hgwells %>%
   count(word, sort = TRUE)
 ```
+
 
 # Sentiment Analysis in Text
 
