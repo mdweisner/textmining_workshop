@@ -66,6 +66,7 @@ library(tidytext)
 example(unnest_tokens)
 ```
 
+# Preparing Tidy Text Data
 ## Stop Words
 
 ### Joins and Anti Joins
@@ -222,12 +223,16 @@ sentiment_books %>%
 with(wordcloud(word, n, colors = colors, max.words = 100))
 ```
 
-# Processing Text in R
+# Processing Untidy Text in R
 
 ## Federalist Papers Data
 Download the Federalist Papers data from here:
 
 [https://github.com/mdweisner/textmining_workshop/raw/master/federalist.zip](https://github.com/mdweisner/textmining_workshop/raw/master/federalist.zip)
+
+OR
+
+[goo.gl/y5v6bx](goo.gl/y5v6bx)
 
 The text of the Federalist Papers need to be in a subdirectory called federalist below your working directory.
 
@@ -315,10 +320,7 @@ We can convert `dtm` into a tidy `data.frame` with
 corpus_tidy <- tidy(dtm)
 ```
 
-We often weight by term frequency - inverse document frequency (tf-idf), which is given by
-\begin{eqnarray*}
-\omega\left(w,d\right) & = & \left(\#\mbox{ times }w\mbox{ appears in }d\right)\times\log\left(\frac{N}{\#d\mbox{s containing }w}\right)
-\end{eqnarray*}
+We often weight by term frequency - inverse document frequency (tf-idf).
 We can use term-frequency inverse document frequency weighting to get a better measure of how critical a word is
 ```{r}
 corpus_tidy_tfidf <- corpus_tidy %>% bind_tf_idf(term, document, count)
