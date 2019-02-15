@@ -1,0 +1,40 @@
+---
+title: "0. Pre-Workshop Setup"
+author: "Michael Weisner"
+date: "February 14, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+1. [https://cran.r-project.org/](Install R)
+2. [https://www.rstudio.com/products/rstudio/download/](Download R Studio)
+3. [https://www.rstudio.com/resources/cheatsheets/](Use R Cheatsheets)
+4. Download Federalist Dataset to your working directory here: [goo.gl/y5v6bx](goo.gl/y5v6bx)
+5. Install Appropriate Packages with the following command:
+
+```{r package installation, eval=FALSE}
+install.packages(c("tidyverse", "dplyr", "ggraph", "tidytext", "gutenbergr", "janeaustenr", "tm", "wordcloud", "topicmodels", "text2vec", "ggplot2", "quanteda", "rmarkdown"))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

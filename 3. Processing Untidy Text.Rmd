@@ -1,0 +1,110 @@
+---
+title: "Process Untidy Text"
+author: "Michael Weisner"
+date: "February 14, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Processing Untidy Text in R
+
+So, what about untidy text?
+
+## Federalist Papers Data
+Download the Federalist Papers data from here:
+
+[https://github.com/mdweisner/textmining_workshop/raw/master/federalist.zip](https://github.com/mdweisner/textmining_workshop/raw/master/federalist.zip)
+
+OR
+
+[goo.gl/y5v6bx](goo.gl/y5v6bx)
+
+The text of the Federalist Papers need to be in a subdirectory called federalist below your working directory.
+
+```{r}
+download.file("https://github.com/mdweisner/textmining_workshop/raw/master/federalist.zip", destfile = "./federalist.zip")
+unzip("federalist.zip")
+dir("federalist")
+```
+
+You should now have a folder called federalist in your working directory.
+
+## Basics of Text Processing
+
+The basic workflow from text includes:
+
+1. Convert your text data, format it into a corpus, which is a special collection of text documents
+2. Clean the corpus (remove whitespace, convert to lowercase, remove stop words, reduce to wordstems)
+3. Create a Document-Term Matrix (DTM) from the corpus
+4. Conduct Analysis
+
+## Corpus & Corpora
+
+First, we indicate which documents are to be included in the corpus
+
+```{r, message = FALSE}
+library(tm)
+corpus_raw <- Corpus(DirSource(directory = "federalist", pattern = "fp"))
+corpus_raw
+```
+In this case, there are 85 documents total. Text analysis often works with a much larger
+set of documents.
+
+Text analysis usually analyzes words or phrases without regard to sentence or paragraph structure
+Common operations on a corpus of text include
+
+* making everything lowercase
+* removing extra whitespace
+* removing punctuation
+* removing numbers
+* removing stop words (like "the", which are common but useless)
+* utilizing word stems (like "politic" to include "political" and "politics")
+
+Next, we apply some operations to the texts in the corpus:
+```{r}
+corpus <- tm_map(corpus_raw, content_transformer(tolower))
+corpus <- tm_map(corpus, stripWhitespace) 
+corpus <- tm_map(corpus, removePunctuation)
+corpus <- tm_map(corpus, removeNumbers)
+corpus <- tm_map(corpus, removeWords, stopwords("english"))
+corpus <- tm_map(corpus, stemDocument)
+```
+We can create a `DocumentTermMatrix` that has one row for each document in the corpus,
+one column for each word (stem), and cell for the count of the number of times that word (stem) appears in that 
+document:
+```{r}
+dtm <- DocumentTermMatrix(corpus) # sparse form
+is.list(dtm)                      # TRUE actually
+dtm.mat <- as.matrix(dtm)         # dense form using plain matrices
+library(Matrix)                   # sparse form using the Matrix package
+dtm.Mat <- sparseMatrix(dtm$i, dtm$j, x = dtm$v, 
+                        dims = c(dtm$nrow, dtm$ncol), 
+                        dimnames = dtm$dimnames)
+dtm.Mat[1:10,1:6]
+```
+
+To find words (stems) that are highly associated with a given word (stem), do something like
+```{r}
+findAssocs(dtm, "govern", corlimit = 0.5)
+```
+
+We can convert `dtm` into a tidy `data.frame` with
+```{r}
+corpus_tidy <- tidy(dtm)
+```
+
+We often weight by term frequency - inverse document frequency (tf-idf).
+We can use term-frequency inverse document frequency weighting to get a better measure of how critical a word is
+```{r}
+corpus_tidy_tfidf <- corpus_tidy %>% bind_tf_idf(term, document, count)
+corpus_tidy_tfidf
+
+corpus_tidy_tfidf %>%
+  select(-count) %>%
+  arrange(desc(tf_idf))
+```
+
+
