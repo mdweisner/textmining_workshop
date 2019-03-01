@@ -120,3 +120,10 @@ table(sentiments$score)
 ```
 
 These are scored by three different sets of researchers. We can then `left_join` a tidy `data.frame` of texts with the `sentiments` `data.frame` to investigate whether the words used tend to be negative or positive, for example using the books writen by Jane Austen.
+
+
+
+
+
+
+

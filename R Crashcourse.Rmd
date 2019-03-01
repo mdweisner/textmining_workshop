@@ -42,6 +42,10 @@ Detailed Cheatsheets can be found here: [http://rstudio.com/cheatsheets](http://
 
 R Markdowns contain three important types of content:
 
+1. An (optional) YAML header surrounded by ---
+2. Chunks of R code surrounded by ```{r}
+3. Text mixed with simple text formatting like `# heading` and `_italics_`.
+
 > ---
 > title: "Diamond sizes"
 > date: 2016-08-25
@@ -67,16 +71,13 @@ R Markdowns contain three important types of content:
 >   geom_freqpoly(binwidth = 0.01)
 > ```
 
-1. An (optional) YAML header surrounded by ---
-2. Chunks of R code surrounded by ```{r}
-3. Text mixed with simple text formatting like `# heading` and `_italics_`.
 
 ### Creating Chunks
 
 Chunks are important to understand for this. Youc an use the Insert button at the top right of the main window (it has a green C and Insert dropdown) or use control + alt + i to insert a chunk, like so:
 
 ```{r}
-
+# empty chunk
 ```
 
 Each chunk has alittle green arrow at the right which lets you run the code it contains, but you can also do so by highlighting code and using control + enter
@@ -162,8 +163,10 @@ str(respondent_wall_type)
 We can extract specific values from a vector like so:
 
 ```{r}
+respondent_wall_type
 respondent_wall_type[2]
 respondent_wall_type[c(3, 2)]
+no_membrs
 no_membrs[c(TRUE, FALSE, TRUE, TRUE)]
 ```
 
@@ -182,7 +185,7 @@ Missing data shows up as `NA` values and you'll need to learn about things like 
 rooms <- c(2, 1, 1, NA, 4)
 mean(rooms) # fails because NA
 mean(rooms, na.rm = TRUE)
-rooms[!is.na(rooms)]
+mean(rooms[!is.na(rooms)])
 ```
 
 
@@ -190,18 +193,114 @@ rooms[!is.na(rooms)]
 
 For our purpose we're going to focus on what a dataset typically is assign as: a `data.frame`. A `data.frame` is how R handles things like CSV or excel files (or most other data files for that matter) where you have rows of observations and columns of variables of one type.
 
+![Source: https://datacarpentry.org/r-socialsci/02-starting-with-data/index.html](data-frame.svg)
+
 ```{r}
 library(tidyverse)
 interviews <- read_csv("https://ndownloader.figshare.com/files/11492171", na = "NULL")
-interviews
+head(interviews)
+```
+
+```{r}
+typeof(interviews)
+head(str(interviews))
+```
+
+### Subsetting Dataframes
+
+You can get specific values with positions:
+
+```{r}
+interviews[1, 1] # this gets the value at the first row and first column position
+```
+
+```{r} 
+interviews[1:3, 4:7] # gets rows 1 through 3 and columns 4 through 7
+```
+
+dplyr, a popular subsetting package, has good tools for this as well:
+```{r}
+library(dplyr)
+head(select(interviews, village, years_liv))
+```
+
+```{r}
+head(filter(interviews, years_liv > 10))
+```
+
+## Factors
+
+Factors are categorical or ordinal data. Here's an example of ordered factor
+```{r}
+credit_rating <- c("AAA", "AA", "A", "BBB", "AA", "BBB", "A")
+
+credit_factor_ordered <- factor(credit_rating, ordered = TRUE, 
+                                levels = c("AAA", "AA", "A", "BBB"))
+
+plot(credit_factor_ordered)
+```
+
+# Dplyr & Tidyverse
+
+The modern methods for subsetting and manipulating data are via the `dplyr()` and `tidyverse()` packages.
+
+`Tidyverse` is what allows us to create tibbles (tidy data frames) that mostly differ in that they print nicely and they can't have rownames. Tibbles are the basis for a lot of tidy data manipulation, though.
+
+`Dplyr` lets us use powerful manipulation commands and pipe (or chain) these commands together:
+
++ `select()`: subset columns
++ `filter()`: subset rows on conditions
++ `mutate()`: create new columns by using information from other columns
++ `group_by()` and `summarize()`: create summary statistics on grouped data
++ `arrange()`: sort results
++ `count()`: count discrete values
+
+```{r}
+interviews %>%
+  select(-interview_date) %>%
+  filter(respondent_wall_type == "burntbricks") %>%
+  summarise(average_years = mean(years_liv))
 ```
 
 
+```{r}
+head(interviews)
+interviews2 <- interviews %>%
+  mutate(mem_by_years = no_membrs * years_liv)
+head(interviews2)
+```
 
 
+# Ggplot
+Ggplot is the more modern way to graph with R. It's flexible and makes plots modular, in that you can add geometry on top of data. Ggplot stands for the "grammar of graphics." The general steps are
 
+1. format your data
+2. set your plane
+3. add your geometry
+4. add themes and tweak visuals
+5. label
 
+```{r}
+library(ggplot2)
+str(mpg)
+?mpg
+```
 
+Let's look at displaced gas and highway miles
+```{r}
+ggplot(mpg, aes(displ, hwy, colour = class)) + 
+  geom_point()
+```
 
-
+```{r}
+library(ggthemes)
+ggplot(mpg, aes(displ, hwy)) + 
+  geom_point(aes(colour = manufacturer)) +
+  geom_smooth(method="lm", se = FALSE) +
+  facet_wrap(~class) +
+  theme_light() +
+  ggtitle("Miles per Gallon by Manufacturer per Car Type") +
+  xlab("Highway Miles") +
+  ylab("Gallons of Gas")
+```
 
