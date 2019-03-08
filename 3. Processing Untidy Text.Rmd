@@ -107,4 +107,54 @@ corpus_tidy_tfidf %>%
   arrange(desc(tf_idf))
 ```
 
+## Predicting Authorship
+
+Now we want a modified corpus that does not eliminate stopwords
+```{r}
+madison <- c(10, 14, 37:48, 58)
+corpus1 <- tm_map(corpus_raw, content_transformer(tolower))
+corpus1 <- tm_map(corpus1, stripWhitespace) 
+corpus1 <- tm_map(corpus1, removePunctuation)
+corpus1 <- tm_map(corpus1, removeNumbers)
+
+dtm1 <- as.matrix(DocumentTermMatrix(corpus1))
+dtm1 <- dtm1 / rowSums(dtm1) * 1000 # scale so that rows sum to 1000
+```
+
+We can then code an outcome variable by author and predict it with the word frequency
+```{r}
+hamilton <- c(1, 6:9, 11:13, 15:17, 21:36, 59:61, 65:85)
+madison <- c(10, 14, 37:48, 58)
+
+author <- rep(NA, nrow(dtm1))
+author[hamilton] <- 1 # 1 if Hamilton
+author[madison] <- -1 # -1 if Madison
+## training set data
+train <- data.frame(author = author[c(hamilton, madison)],
+                    dtm1[c(hamilton, madison), ])
+## fit linear model
+hm_fit <- lm(author ~ upon + there + consequently + whilst, data = train)
+hm_fit
+```
+
+Now we can predict the authorship of unknown Federalist Papers:
+```{r}
+disputed  <- c(49,  50:57, 62,  63)
+tf_disputed <- as.data.frame(dtm1[disputed, ])
+pred  <- predict(hm_fit, newdata = tf_disputed)
+sign(pred)
+```
+
+# Plot
+Make a plot
+```{r, message=FALSE}
+library(ggplot2)
+data.frame(nletters = nchar(colnames(dtm))) %>%
+ggplot(aes(x = nletters)) + geom_histogram(binwidth = 1) +
+geom_vline(xintercept = mean(nchar(colnames(dtm))), 
+           color = "green", size = 1, alpha = .5) +
+labs(x = "Number of Letters", y = "Number of Words")
+```
+
+See also https://cran.r-project.org/web/views/WebTechnologies.html
 

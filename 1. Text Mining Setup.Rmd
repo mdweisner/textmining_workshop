@@ -4,6 +4,7 @@ author: "Michael Weisner"
 date: "February 14, 2019"
 output: ''
 ---
+This tutorial was based on the Fall 2018 Data Mining course at Columbia University lead by Ben Goodrich.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
