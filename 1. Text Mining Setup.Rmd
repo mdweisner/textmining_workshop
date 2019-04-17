@@ -62,6 +62,17 @@ Non-tidy approaches (that can be made tidy) to text include
 ## Ways to Break Up Text Data
 The `unnest_tokens` function in the **tidytext** package can parse words, sentences, paragraphs, and more into tokens, in which is removes punctuation and converts to lowercase.
 
+The tidytext::unnest_tokens() funciton does the following:
+
+1. **Convert text to lowercase**: each word found in the text will be converted to lowercase so ensure that you don’t get duplicate words due to variation in capitalization.
+2. **Punctuation is removed**: all instances of periods, commas etc will be removed from your list of words , and
+3. **Unique id associated with the tweet**: will be added for each occurrence of the word
+
+The unnest_tokens() function takes two arguments:
+
++ The name of the column where the unique word will be stored and
++ The column name from the data.frame that you are using that you want to pull unique words from.
+
 ### Tidytext Examples:
 
 Fundamentally you can break up your units of textual analysis by words, word pairs, sentences, paragraphs, chapters, etc.

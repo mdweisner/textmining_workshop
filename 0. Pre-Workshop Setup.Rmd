@@ -16,11 +16,18 @@ knitr::opts_chunk$set(echo = TRUE)
 4. Download Federalist Dataset to your working directory here: [goo.gl/y5v6bx](goo.gl/y5v6bx)
 5. Install Appropriate Packages with the following command:
 
-```{r package installation, eval=FALSE}
-install.packages(c("tidyverse", "dplyr", "ggraph", "tidytext", "gutenbergr", "janeaustenr", "tm", "wordcloud", "topicmodels", "text2vec", "ggplot2", "quanteda", "rmarkdown"))
+```{r package installation1, eval=FALSE}
+install.packages(c("tidyverse", "dplyr", "ggraph", "tidytext", "gutenbergr", "janeaustenr", "tm", "wordcloud", "topicmodels", "text2vec", "ggplot2", "igraph", "quanteda", "rmarkdown", "rtweet"))
 ```
 
 
+You may also need devtools
+
+```{r package installation2, eval=FALSE}
+install.packages("devtools")
+library(devtools)
+install_github("dgrtwo/widyr")
+```
 
 
 
