@@ -16,6 +16,9 @@ library(stringr)
 ```
 
 ```{r}
+library(dplyr)
+library(tidyverse)
+library(tidytext)
 tidy_books <- austen_books() %>%
   group_by(book) %>%
   mutate(linenumber = row_number(),
@@ -111,4 +114,16 @@ colors[sentiment_books$sentiment == "positive"] <-  "cyan3"
 
 sentiment_books %>%
 with(wordcloud(word, n, colors = colors, max.words = 100))
+
+library(ggwordcloud)
+sentiment_books_small <- sentiment_books %>%
+  arrange(desc(n)) %>%
+  mutate(rank = row_number()) %>%
+  filter(rank <= 100)
+
+book_sent_gg <- ggplot(sentiment_books_small, aes(label = word, size = n, color = sentiment)) +
+                         geom_text_wordcloud_area() +
+                         scale_size_area(max_size = 24)
+                       
+book_sent_gg
 ```
