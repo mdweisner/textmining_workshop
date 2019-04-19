@@ -21,6 +21,7 @@ library(tidytext)
 # plotting packages
 library(igraph)
 library(ggraph)
+library(ggthemes)
 ```
 
 
@@ -73,7 +74,8 @@ climate_tweets_clean %>%
   coord_flip() +
       labs(x = "Count",
       y = "Unique words",
-      title = "Count of unique words found in tweets")
+      title = "Count of unique words found in tweets") +
+  theme_tufte(ticks = TRUE)
 ```
 
 Let's see how many words are in the data already based on the number of rows
@@ -111,7 +113,8 @@ cleaned_tweet_words %>%
   coord_flip() +
       labs(x = "Count",
       y = "Unique words",
-      title = "Count of unique words found in tweets")
+      title = "Count of unique words found in tweets") +
+  theme_tufte(ticks = TRUE)
 ```
 
 # Networks of Words (ngrams)
@@ -148,6 +151,25 @@ climate_words_counts <- climate_tweets_filtered %>%
 head(climate_words_counts)
 ```
 
+Finally let's plot the data
+
+```{r}
+library(igraph)
+library(ggraph)
+
+# plot climate change word network
+climate_words_counts %>%
+        filter(n >= 24) %>%
+        graph_from_data_frame() %>%
+        ggraph(layout = "fr") +
+        geom_edge_link(aes(edge_alpha = n, edge_width = n)) +
+        geom_node_point(color = "darkslategray4", size = 3) +
+        geom_node_text(aes(label = name), vjust = 1.8, size = 3) +
+        labs(title = "Word Network: Tweets using the hashtag - Climate Change",
+             subtitle = "Text mining twitter data ",
+             x = "", y = "") +
+  theme_tufte(ticks = TRUE)
+```
 
 
 
