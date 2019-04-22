@@ -93,6 +93,8 @@ findAssocs(dtm, "govern", corlimit = 0.5)
 
 We can convert `dtm` into a tidy `data.frame` with
 ```{r}
+library(tidyverse)
+library(tidytext)
 corpus_tidy <- tidy(dtm)
 ```
 
