@@ -65,16 +65,18 @@ If people are interested I can show you how to pre-scrape tweets.
 ## Pre-scraped tweets about Climate Change
 For this exercise we will use pre-scraped tweets
 ```{r}
+library(tidyverse)
 climate_tweets <- read_csv("https://raw.githubusercontent.com/mdweisner/textmining_workshop/master/climate_tweets.csv")
 
 # OR
 
-climate_tweets <- read_csv("https://bit.ly/2IBle5W")
-str(climate_tweets)
+# climate_tweets <- read_csv("https://bit.ly/2IBle5W")
+head(climate_tweets)
 ```
 
 # Cleaning Tweets
 ```{r}
+library(tidytext)
 # remove urls tidyverse is failing here for some reason
 #climate_tweets <- climate_tweets %>%
 #  mutate_at(c("stripped_text"), gsub("http.*","",.))
@@ -97,6 +99,8 @@ climate_tweets_clean <- climate_tweets %>%
 Just so it's clear, here's what the top 15 words would be if we don't remove stop words.
 
 ```{r}
+library(ggplot2)
+library(ggthemes)
 climate_tweets_clean %>%
   count(word, sort = TRUE) %>%
   top_n(15) %>%
@@ -155,8 +159,8 @@ cleaned_tweet_words %>%
 ngrams specifies pairs and 2 is the number of words together
 
 ```{r}
-# library(devtools)
-# install_github("dgrtwo/widyr")
+#library(devtools)
+# devtools::install_github("dgrtwo/widyr")
 library(widyr)
 
 # remove punctuation, convert to lowercase, add id for each tweet!
