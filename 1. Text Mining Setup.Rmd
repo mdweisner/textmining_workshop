@@ -20,6 +20,7 @@ Packages for this tutorial include
 * gutenbergr
 * janeaustenr
 * wordcloud
+* ggwordcloud
 * tm
 * topicmodels
 * text2vec
@@ -27,7 +28,7 @@ Packages for this tutorial include
 
 ## Package Installation (Optional)
 ```{r package installation, eval=FALSE}
-# install.packages(c("tidyverse", "dplyr", "ggraph", "tidytext", "gutenbergr", "janeaustenr", "tm", "wordcloud", "topicmodels", "text2vec", "ggplot2", "quanteda"))
+# install.packages(c("tidyverse", "dplyr", "ggraph", "tidytext", "gutenbergr", "janeaustenr", "tm", "wordcloud", "topicmodels", "text2vec", "ggplot2", "ggwordcloud", "quanteda"))
 ```
 
 ## Basic Packages to Load

@@ -21,7 +21,7 @@ install.packages(c("tidyverse", "dplyr", "ggraph", "tidytext", "gutenbergr", "ja
 ```
 
 
-You may also need devtools
+You may also need devtools to install from github, with packages like widyr.
 
 ```{r package installation2, eval=FALSE}
 install.packages("devtools")
