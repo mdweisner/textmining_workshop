@@ -2,7 +2,10 @@
 title: "R Crashcourse"
 author: "Michael Weisner"
 date: "February 14, 2019"
-output: html_document
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -46,30 +49,30 @@ R Markdowns contain three important types of content:
 2. Chunks of R code surrounded by ```{r}
 3. Text mixed with simple text formatting like `# heading` and `_italics_`.
 
-> ---
-> title: "Diamond sizes"
-> date: 2016-08-25
-> output: html_document
-> ---
+> # ---
+> # title: "Diamond sizes"
+> # date: 2016-08-25
+> # output: html_document
+> # ---
 > 
-> ```{r setup, include = FALSE}
->  library(ggplot2)
->  library(dplyr)
+> # ```{r}
+> # library(ggplot2)
+> # library(dplyr)
+> #
+> # smaller <- diamonds %>% 
+> #  filter(carat <= 2.5)
+> # ```
 > 
->  smaller <- diamonds %>% 
->   filter(carat <= 2.5)
-> ```
+> # We have data about `r nrow(diamonds)` diamonds. Only 
+> # `r nrow(diamonds) - nrow(smaller)` are larger than
+> # 2.5 carats. The distribution of the remainder is shown
+> # below:
 > 
-> We have data about `r nrow(diamonds)` diamonds. Only 
-> `r nrow(diamonds) - nrow(smaller)` are larger than
-> 2.5 carats. The distribution of the remainder is shown
-> below:
-> 
-> ```{r, echo = FALSE}
->  smaller %>% 
->   ggplot(aes(carat)) + 
->   geom_freqpoly(binwidth = 0.01)
-> ```
+> # ```{r}
+> # smaller %>% 
+> # ggplot(aes(carat)) + 
+> #  geom_freqpoly(binwidth = 0.01)
+> # ```
 
 
 ### Creating Chunks
@@ -120,7 +123,7 @@ weight_kgs
 ### Vectors
 A vector is the most common and basic data type in R, and is pretty much the workhorse of R. A vector is composed by a series of values, which can be either numbers or characters. We can assign a series of values to a vector using the c() function.
 
-#### Assign
+#### Assign Values to Variables
 ```{r}
 no_membrs <- c(3, 7, 10, 6)
 no_membrs
@@ -197,7 +200,8 @@ For our purpose we're going to focus on what a dataset typically is assign as: a
 
 ```{r}
 library(tidyverse)
-interviews <- read_csv("https://ndownloader.figshare.com/files/11492171", na = "NULL")
+#interviews <- read_csv("https://ndownloader.figshare.com/files/11492171", na = "NULL")
+interviews <- read_csv("https://bit.ly/2vnbYtu")
 head(interviews)
 ```
 

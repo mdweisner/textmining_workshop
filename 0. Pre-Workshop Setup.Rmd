@@ -2,7 +2,10 @@
 title: "0. Pre-Workshop Setup"
 author: "Michael Weisner"
 date: "February 14, 2019"
-output: html_document
+output:
+  word_document: default
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -17,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 5. Install Appropriate Packages with the following command:
 
 ```{r package installation1, eval=FALSE}
-install.packages(c("tidyverse", "dplyr", "ggraph", "tidytext", "gutenbergr", "janeaustenr", "tm", "wordcloud", "topicmodels", "text2vec", "ggplot2", "igraph", "quanteda", "rmarkdown", "rtweet"))
+install.packages(c("tidyr", "tidyverse", "dplyr", "ggraph", "tidytext", "gutenbergr", "janeaustenr", "tm", "wordcloud", "topicmodels", "text2vec", "ggplot2", "igraph", "quanteda", "rmarkdown", "rtweet", "stringr", "Matrix", "ggthemes"))
 ```
 
 
@@ -26,7 +29,7 @@ You may also need devtools to install from github, with packages like widyr.
 ```{r package installation2, eval=FALSE}
 install.packages("devtools")
 library(devtools)
-install_github("dgrtwo/widyr")
+devtools::install_github("dgrtwo/widyr")
 ```
 
 

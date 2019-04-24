@@ -2,7 +2,9 @@
 title: "Text Mining Setup"
 author: "Michael Weisner"
 date: "February 14, 2019"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 This tutorial was based on the Fall 2018 Data Mining course at Columbia University lead by Ben Goodrich.
 

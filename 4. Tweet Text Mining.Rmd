@@ -2,7 +2,9 @@
 title: "4. Tweet Text Mining"
 author: "Michael Weisner"
 date: "3/8/2019"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 
 This tutorial is heavily based on the tutorial written by Leah Wasser and Carson Farmer, [https://www.earthdatascience.org/courses/earth-analytics/get-data-using-apis/text-mining-twitter-data-intro-r/](here).
