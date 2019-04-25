@@ -49,30 +49,30 @@ R Markdowns contain three important types of content:
 2. Chunks of R code surrounded by ```{r}
 3. Text mixed with simple text formatting like `# heading` and `_italics_`.
 
-> # ---
-> # title: "Diamond sizes"
-> # date: 2016-08-25
-> # output: html_document
-> # ---
-> 
-> # ```{r}
-> # library(ggplot2)
-> # library(dplyr)
-> #
-> # smaller <- diamonds %>% 
-> #  filter(carat <= 2.5)
-> # ```
-> 
-> # We have data about `r nrow(diamonds)` diamonds. Only 
-> # `r nrow(diamonds) - nrow(smaller)` are larger than
-> # 2.5 carats. The distribution of the remainder is shown
-> # below:
-> 
-> # ```{r}
-> # smaller %>% 
-> # ggplot(aes(carat)) + 
-> #  geom_freqpoly(binwidth = 0.01)
-> # ```
+# ---
+# title: "Diamond sizes"
+# date: 2016-08-25
+# output: html_document
+# ---
+
+# ```{r}
+# library(ggplot2)
+# library(dplyr)
+# data(diamonds)
+# smaller <- diamonds %>% 
+#  filter(carat <= 2.5)
+# ```
+
+# We have data about r nrow(diamonds) diamonds. Only 
+# r nrow(diamonds) - nrow(smaller) are larger than
+# 2.5 carats. The distribution of the remainder is shown
+# below:
+
+# ```{r}
+# smaller %>% 
+# ggplot(aes(carat)) + 
+#  geom_freqpoly(binwidth = 0.01)
+# ```
 
 
 ### Creating Chunks
@@ -161,6 +161,20 @@ str(respondent_wall_type)
 * "complex" to represent complex numbers with real and imaginary parts (e.g., 1 + 4i) and that’s all we’re going to say about them
 * "raw" for bitstreams that we won’t discuss further
 
+#### Factors
+
+A special kind of vector includes Factors. 
+
+Factors are categorical or ordinal data. Here's an example of ordered factor
+```{r}
+credit_rating <- c("AAA", "AA", "A", "BBB", "AA", "BBB", "A")
+
+credit_factor_ordered <- factor(credit_rating, ordered = TRUE, 
+                                levels = c("AAA", "AA", "A", "BBB"))
+
+plot(credit_factor_ordered)
+```
+
 #### Subsetting Vectors
 
 We can extract specific values from a vector like so:
@@ -196,7 +210,9 @@ mean(rooms[!is.na(rooms)])
 
 For our purpose we're going to focus on what a dataset typically is assign as: a `data.frame`. A `data.frame` is how R handles things like CSV or excel files (or most other data files for that matter) where you have rows of observations and columns of variables of one type.
 
-![Source: https://datacarpentry.org/r-socialsci/02-starting-with-data/index.html](data-frame.svg)
+https://bit.ly/2W3S2Yl
+
+![Source: https://datacarpentry.org/r-socialsci/fig/data-frame.svg](data-frame.svg)
 
 ```{r}
 library(tidyverse)
@@ -232,17 +248,6 @@ head(select(interviews, village, years_liv))
 head(filter(interviews, years_liv > 10))
 ```
 
-## Factors
-
-Factors are categorical or ordinal data. Here's an example of ordered factor
-```{r}
-credit_rating <- c("AAA", "AA", "A", "BBB", "AA", "BBB", "A")
-
-credit_factor_ordered <- factor(credit_rating, ordered = TRUE, 
-                                levels = c("AAA", "AA", "A", "BBB"))
-
-plot(credit_factor_ordered)
-```
 
 # Dplyr & Tidyverse
 
@@ -275,7 +280,7 @@ head(interviews2)
 ```
 
 
-# Ggplot
+# Ggplot & Graphing
 Ggplot is the more modern way to graph with R. It's flexible and makes plots modular, in that you can add geometry on top of data. Ggplot stands for the "grammar of graphics." The general steps are
 
 1. format your data
