@@ -65,7 +65,7 @@ Non-tidy approaches (that can be made tidy) to text include
 ## Ways to Break Up Text Data
 The `unnest_tokens` function in the **tidytext** package can parse words, sentences, paragraphs, and more into tokens, in which is removes punctuation and converts to lowercase.
 
-The tidytext::unnest_tokens() funciton does the following:
+The tidytext::unnest_tokens() function does the following:
 
 1. **Convert text to lowercase**: each word found in the text will be converted to lowercase so ensure that you don’t get duplicate words due to variation in capitalization.
 2. **Punctuation is removed**: all instances of periods, commas etc will be removed from your list of words , and
