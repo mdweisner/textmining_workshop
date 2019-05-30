@@ -12,10 +12,11 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+[Example Git Update]
 
-1. [https://cran.r-project.org/](Install R)
-2. [https://www.rstudio.com/products/rstudio/download/](Download R Studio)
-3. [https://www.rstudio.com/resources/cheatsheets/](Use R Cheatsheets)
+1. [Install R](https://cran.r-project.org/)
+2. [Download R Studio](https://www.rstudio.com/products/rstudio/download/)
+3. [Use R Cheatsheets](https://www.rstudio.com/resources/cheatsheets/)
 4. Download Federalist Dataset to your working directory here: [goo.gl/y5v6bx](goo.gl/y5v6bx)
 5. Install Appropriate Packages with the following command:
 
